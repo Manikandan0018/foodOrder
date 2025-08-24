@@ -37,7 +37,7 @@ export const Home = ({ notifi }) => {
   const fname = authUser.username?.[0]?.toUpperCase() || '?';
 
   return (
-    <div className="flex lg:ml-50">
+    <div className="flex lg:ml-70">
       <div className="flex-1">
         {notifi && <NotificationPage />}
         {!notifi && (
