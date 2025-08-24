@@ -1,23 +1,20 @@
 import { useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from 'react-router-dom';
 import logo from '../../img/twitter-logo.png';
 import { toast, Toaster } from "react-hot-toast";
 
 const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL?.trim();
 
-export const Login = () => {
+export const Login = ({ refetchAuthUser }) => {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
-
-  const handleNavigate = () => navigate('/signup');
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const { mutate: login } = useMutation({
+  const loginMutation = useMutation({
     mutationFn: async ({ email, password }) => {
       const res = await fetch(`${VITE_BACKEND_URL}api/auth/login`, {
         method: "POST",
@@ -27,23 +24,27 @@ export const Login = () => {
 
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Login failed");
-
       return data;
     },
-    onSuccess: (data) => {
-      localStorage.setItem("token", data.token); // ✅ Save JWT
+    onSuccess: async (data) => {
+      // ✅ Save token
+      localStorage.setItem("token", data.token);
+
       toast.success("Login successful");
-      queryClient.invalidateQueries({ queryKey: ["authUser"] });
-      navigate("/"); // redirect after login
+
+      // ✅ Refetch authUser in App
+      if (refetchAuthUser) await refetchAuthUser();
+
+      navigate("/"); // ✅ Redirect after login
     },
     onError: (err) => {
-      toast.error(err.message || "Invalid email or password");
+      toast.error(err.message || "Invalid credentials");
     },
   });
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    login(formData);
+    loginMutation.mutate(formData);
   };
 
   return (
@@ -86,17 +87,6 @@ export const Login = () => {
                 Login
               </button>
             </form>
-
-            <p className="mt-4 text-center text-sm text-gray-600">
-              Don’t have an account?
-              <button
-                onClick={handleNavigate}
-                type="button"
-                className="ml-1 text-blue-600 hover:underline cursor-pointer"
-              >
-                SignUp
-              </button>
-            </p>
           </div>
         </div>
       </div>

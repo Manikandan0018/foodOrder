@@ -20,24 +20,24 @@ const App = () => {
   const [showSidebar, setShowSidebar] = useState(false);
   const location = useLocation();
 
-  const token = localStorage.getItem("token"); // ✅ Get JWT
-
-  const { data: authUser, isLoading } = useQuery({
+  // React Query: fetch auth user
+  const { data: authUser, isLoading, refetch } = useQuery({
     queryKey: ['authUser'],
     queryFn: async () => {
+      const token = localStorage.getItem("token");
       if (!token) return null;
 
       const res = await fetch(`${VITE_BACKEND_URL}api/auth/getMe`, {
-  method: "GET",
-  credentials: "include", // ✅ send the cookie automatically
-  headers: { "Content-Type": "application/json" },
-});
-
+        method: "GET",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       if (!res.ok) return null;
-
-      const data = await res.json();
-      return data;
+      return res.json();
     },
     retry: false,
     refetchOnWindowFocus: false,
@@ -50,7 +50,6 @@ const App = () => {
   return (
     <>
       <div className="flex">
-        {/* Sidebar + Hamburger for non-admin routes */}
         {location.pathname !== "/admin" && authUser && (
           <>
             <button
@@ -59,19 +58,38 @@ const App = () => {
             >
               ☰
             </button>
-            <Settings showSidebar={showSidebar} setShowSidebar={setShowSidebar} setNoti={setNoti} noti={noti} />
+            <Settings
+              showSidebar={showSidebar}
+              setShowSidebar={setShowSidebar}
+              setNoti={setNoti}
+              noti={noti}
+            />
           </>
         )}
 
-        {/* Main Content */}
         <div className="flex-1 lg:ml-64 pt-20">
-          <Routes basename='/'>
-            <Route path="/" element={authUser ? <Home notifi={noti} /> : <Front />} />
+          <Routes>
+            <Route
+              path="/"
+              element={authUser ? <Home notifi={noti} /> : <Front />}
+            />
             <Route path="/profile/:username" element={<PeopleProfile />} />
-            <Route path="/signup" element={!authUser ? <SignUp /> : <Navigate to="/" />} />
-            <Route path="/login" element={!authUser ? <Login /> : <Navigate to="/" />} />
+            <Route
+              path="/signup"
+              element={!authUser ? <SignUp /> : <Navigate to="/" />}
+            />
+            <Route
+              path="/login"
+              element={
+                !authUser ? (
+                  <Login refetchAuthUser={refetch} />
+                ) : (
+                  <Navigate to="/" />
+                )
+              }
+            />
             <Route path="/admin" element={<Admin />} />
-            <Route path="/chat" element={<Chat currentUser={authUser} />} />         
+            <Route path="/chat" element={<Chat currentUser={authUser} />} />
           </Routes>
         </div>
       </div>
