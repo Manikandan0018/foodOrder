@@ -148,7 +148,7 @@ const Chat = ({ currentUser }) => {
     });
 
   return (
-    <div className="flex lg:ml-30 h-screen bg-white">
+    <div className="flex lg:ml-50 h-screen bg-white">
       {/* Sidebar */}
       <div className="w-1/3 md:w-1/4 border-r overflow-y-auto">
         <h2 className="p-4 font-bold border-b text-lg">Messages</h2>
