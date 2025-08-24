@@ -1,6 +1,8 @@
 import jwt from "jsonwebtoken";
 import User from "../models/user.model.js";
 
+
+
 export const protectRoute = async (req, res, next) => {
   try {
     let token = req.headers.authorization?.startsWith("Bearer")
@@ -23,3 +25,5 @@ export const protectRoute = async (req, res, next) => {
     res.status(401).json({ error: error.message || "Invalid token" });
   }
 };
+
+
