@@ -1,25 +1,17 @@
 import { useState } from "react";
-import BaseUrl from "../../constant/Url.jsx";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from 'react-router-dom';
 import logo from '../../img/twitter-logo.png';
 import { toast, Toaster } from "react-hot-toast";
 
-const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-console.log("Backend URL:", VITE_BACKEND_URL); // just to confirm
+const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL?.trim();
 
 export const Login = () => {
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',  
-  });
-
+  const [formData, setFormData] = useState({ email: '', password: '' });
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  const handleNavigate = () => {
-    navigate('/signup'); 
-  };
+  const handleNavigate = () => navigate('/signup');
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -27,43 +19,25 @@ export const Login = () => {
 
   const { mutate: login } = useMutation({
     mutationFn: async ({ email, password }) => {
-      const url = `${VITE_BACKEND_URL}api/auth/login`;
-
-      const res = await fetch(url, {
+      const res = await fetch(`${VITE_BACKEND_URL}api/auth/login`, {
         method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
 
-      const data = await res.json(); 
-
-      if (!res.ok) {
-        throw new Error(data.message || "Something went wrong");
-      }
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Login failed");
 
       return data;
     },
     onSuccess: (data) => {
-      if (data?.isBlocked) {
-        toast.error("Your account is blocked due to bad comments");
-        return;
-      }
-
+      localStorage.setItem("token", data.token); // ✅ Save JWT
       toast.success("Login successful");
       queryClient.invalidateQueries({ queryKey: ["authUser"] });
+      navigate("/"); // redirect after login
     },
     onError: (err) => {
-      const msg = err.message;
-
-      if (msg.includes("blocked")) {
-        toast.error("Your account is blocked due to bad comments");
-      } else {
-        toast.error("Invalid email or password");
-      }
+      toast.error(err.message || "Invalid email or password");
     },
   });
 
@@ -75,15 +49,15 @@ export const Login = () => {
   return (
     <>
       <Toaster position="top-center" reverseOrder={false} />
-      
       <div>
         <img className="w-10 absolute top-10 left-20" src={logo} alt="Logo" />
       </div>
 
-      <div className="min-h-screen flex items-center justify-center  p-4">
+      <div className="min-h-screen flex items-center justify-center p-4">
         <div className="w-full max-w-md shadow-xl rounded-2xl bg-white">
           <div className="p-8">
-            <h2 className="text-2xl cursor-pointer font-bold text-center mb-6">Login</h2>
+            <h2 className="text-2xl font-bold text-center mb-6 cursor-pointer">Login</h2>
+
             <form onSubmit={handleSubmit} className="space-y-4">
               <input
                 type="email"
@@ -118,7 +92,7 @@ export const Login = () => {
               <button
                 onClick={handleNavigate}
                 type="button"
-                className="ml-1 cursor-pointer text-blue-600 hover:underline"
+                className="ml-1 text-blue-600 hover:underline cursor-pointer"
               >
                 SignUp
               </button>

@@ -6,7 +6,6 @@ import SignUp from './sign/login/SignUp.jsx';
 import { Login } from './sign/login/Login.jsx';
 import { Front } from './sign/login/Front.jsx';
 import { useQuery } from '@tanstack/react-query';
-import BaseUrl from "./constant/Url.jsx";
 import { Settings } from './sign/login/Settings.jsx';
 import { Home } from './sign/login/Home.jsx';
 import { useState } from 'react';
@@ -14,24 +13,30 @@ import Admin from './Admin/Admin.jsx';
 import { PeopleProfile } from './sign/login/PeopleProfile.jsx';
 import Chat from './chat/Chat.jsx';
 
-const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-console.log("Backend URL:", VITE_BACKEND_URL); // just to confirm
+const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL?.trim();
 
 const App = () => {
   const [noti, setNoti] = useState(false);
   const [showSidebar, setShowSidebar] = useState(false);
   const location = useLocation();
 
+  const token = localStorage.getItem("token"); // ✅ Get JWT
+
   const { data: authUser, isLoading } = useQuery({
     queryKey: ['authUser'],
     queryFn: async () => {
+      if (!token) return null;
+
       const res = await fetch(`${VITE_BACKEND_URL}api/auth/getMe`, {
-        method: "GET",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, // ✅ Send JWT
+        },
       });
+
+      if (!res.ok) return null;
+
       const data = await res.json();
-      if (!res.ok || data.error) return null;
       return data;
     },
     retry: false,
@@ -54,7 +59,7 @@ const App = () => {
             >
               ☰
             </button>
-            <Settings showSidebar={showSidebar} setShowSidebar={setShowSidebar}setNoti={setNoti} noti={noti} />
+            <Settings showSidebar={showSidebar} setShowSidebar={setShowSidebar} setNoti={setNoti} noti={noti} />
           </>
         )}
 
@@ -67,7 +72,7 @@ const App = () => {
             <Route path="/login" element={!authUser ? <Login /> : <Navigate to="/" />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="/chat" element={<Chat currentUser={authUser} />} />         
-             </Routes>
+          </Routes>
         </div>
       </div>
 
