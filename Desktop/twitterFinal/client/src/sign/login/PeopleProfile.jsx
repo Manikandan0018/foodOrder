@@ -6,6 +6,9 @@ import { IoMdSearch } from "react-icons/io";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import axios from 'axios';
 
+const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+console.log("Backend URL:", VITE_BACKEND_URL); // just to confirm
+
 export const PeopleProfile = ({ profileShow, setProfileShow, authUser }) => {
   const { username } = useParams();
   const [userData, setUserData] = useState(null);
@@ -18,7 +21,7 @@ export const PeopleProfile = ({ profileShow, setProfileShow, authUser }) => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/users/${username}`, {
+        const res = await axios.get(`${VITE_BACKEND_URL}api/users/${username}`, {
           withCredentials: true,
         });
         setUserData(res.data);

@@ -5,6 +5,9 @@ import { Trash2, Loader2 } from "lucide-react"; // Loader2 = nice spinner
 
 const API_URL = "http://localhost:5000/api/admin";
 
+const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+console.log("Backend URL:", VITE_BACKEND_URL); // just to confirm
+
 export default function Admin() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -13,7 +16,7 @@ export default function Admin() {
   const fetchPosts = async () => {
     try {
       setLoading(true);
-      const res = await axios.get(`${API_URL}/posts`);
+      const res = await axios.get(`${VITE_BACKEND_URL}api/admin/posts`);
       setPosts(res.data);
     } catch (error) {
       console.error(error);
@@ -28,13 +31,13 @@ export default function Admin() {
 
   // ✅ Delete post
   const handleDeletePost = async (postId) => {
-    await axios.delete(`${API_URL}/posts/${postId}`);
+    await axios.delete(`${VITE_BACKEND_URL}api/admin/posts/${postId}`);
     fetchPosts();
   };
 
   // ✅ Delete comment
   const handleDeleteComment = async (postId, commentId) => {
-    await axios.delete(`${API_URL}/posts/${postId}/comments/${commentId}`);
+    await axios.delete(`${VITE_BACKEND_URL}api/admin/posts/${postId}/comments/${commentId}`);
     fetchPosts();
   };
 

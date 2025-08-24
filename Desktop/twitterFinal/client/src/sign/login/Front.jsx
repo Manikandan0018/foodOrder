@@ -6,6 +6,9 @@ import { FaApple } from 'react-icons/fa';
 import { IoIosSettings } from 'react-icons/io';
 import { Logout } from './Logout.jsx';
 
+const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+console.log("Backend URL:", VITE_BACKEND_URL); // just to confirm
+
 export const Front = () => {
   const navigate = useNavigate();
   const login = () => navigate('/login');

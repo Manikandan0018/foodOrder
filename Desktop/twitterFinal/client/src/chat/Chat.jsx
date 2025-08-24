@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
+const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+console.log("Backend URL:", VITE_BACKEND_URL); // just to confirm
+
 const Chat = ({ currentUser }) => {
   const [users, setUsers] = useState([]);
   const [chats, setChats] = useState({});
@@ -13,7 +16,7 @@ const Chat = ({ currentUser }) => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/users/getAllUser");
+        const res = await axios.get(`${VITE_BACKEND_URL}/api/users/getAllUser`);
         setUsers(res.data);
       } catch (err) {
         console.error("Error fetching users:", err);
@@ -30,7 +33,7 @@ const Chat = ({ currentUser }) => {
 
         try {
           const chatRes = await axios.get(
-            `http://localhost:5000/api/chats/find/${currentUser._id}/${user._id}`
+            `${VITE_BACKEND_URL}api/chats/find/${currentUser._id}/${user._id}`
           );
           const chat = chatRes.data;
           if (!chat) continue;
@@ -38,7 +41,7 @@ const Chat = ({ currentUser }) => {
           setChats((prev) => ({ ...prev, [chat._id]: chat }));
 
           const msgRes = await axios.get(
-            `http://localhost:5000/api/messages/${chat._id}`
+            `${VITE_BACKEND_URL}api/messages/${chat._id}`
           );
           const msgs = msgRes.data.reverse();
           setChatMessages((prev) => ({ ...prev, [chat._id]: msgs }));
@@ -65,7 +68,7 @@ const Chat = ({ currentUser }) => {
       );
 
       if (!chat) {
-        const res = await axios.post("http://localhost:5000/api/chats", {
+        const res = await axios.post(`${VITE_BACKEND_URL}api/chats`, {
           members: [currentUser._id, user._id],
         });
         chat = res.data;
@@ -74,10 +77,10 @@ const Chat = ({ currentUser }) => {
 
       setCurrentChat(chat);
 
-      const msgRes = await axios.get(`http://localhost:5000/api/messages/${chat._id}`);
+      const msgRes = await axios.get(`${VITE_BACKEND_URL}api/messages/${chat._id}`);
       setChatMessages((prev) => ({ ...prev, [chat._id]: msgRes.data.reverse() }));
 
-      await axios.post("http://localhost:5000/api/messages/markAsRead", {
+      await axios.post(`${VITE_BACKEND_URL}api/messages/markAsRead`, {
         chatId: chat._id,
         userId: currentUser._id,
       });
@@ -92,7 +95,7 @@ const Chat = ({ currentUser }) => {
   const handleSend = async () => {
     if (!text.trim() || !currentChat) return;
     try {
-      const res = await axios.post("http://localhost:5000/api/messages", {
+      const res = await axios.post(`${VITE_BACKEND_URL}api/messages`, {
         chatId: currentChat._id,
         senderId: currentUser._id,
         text,

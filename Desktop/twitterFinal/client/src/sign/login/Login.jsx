@@ -5,6 +5,9 @@ import { useNavigate } from 'react-router-dom';
 import logo from '../../img/twitter-logo.png';
 import { toast, Toaster } from "react-hot-toast";
 
+const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+console.log("Backend URL:", VITE_BACKEND_URL); // just to confirm
+
 export const Login = () => {
   const [formData, setFormData] = useState({
     email: '',
@@ -24,7 +27,7 @@ export const Login = () => {
 
   const { mutate: login } = useMutation({
     mutationFn: async ({ email, password }) => {
-      const url = `${BaseUrl}/api/auth/login`;
+      const url = `${VITE_BACKEND_URL}api/auth/login`;
 
       const res = await fetch(url, {
         method: "POST",

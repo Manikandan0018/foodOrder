@@ -9,6 +9,9 @@ import { useState } from "react";
 import { useFollow } from "../useFollow";
 import { toast } from 'react-hot-toast'; // install using: npm i react-hot-toast
 
+const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+console.log("Backend URL:", VITE_BACKEND_URL); // just to confirm
+
 export const Post = ({ post }) => {
   const queryClient = useQueryClient();
   const [text, setText] = useState("");
@@ -21,7 +24,7 @@ export const Post = ({ post }) => {
 
   const { mutate: deletePost, isPending: deletePending } = useMutation({
     mutationFn: async () => {
-      const res = await fetch(`${BaseUrl}/api/posts/deletePost/${post._id}`, {
+      const res = await fetch(`${VITE_BACKEND_URL}api/posts/deletePost/${post._id}`, {
         method: "DELETE",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
@@ -37,7 +40,7 @@ export const Post = ({ post }) => {
 
   const { mutate: LikedPost } = useMutation({
     mutationFn: async (postId) => {
-      const res = await fetch(`${BaseUrl}/api/posts/likeUnlikePost/${postId}`, {
+      const res = await fetch(`${VITE_BACKEND_URL}api/posts/likeUnlikePost/${postId}`, {
         method: "POST",
         credentials: "include",
       });
@@ -51,7 +54,7 @@ export const Post = ({ post }) => {
 
   const { mutate: BadComment, isPending: commentPending } = useMutation({
   mutationFn: async ({ postId, text }) => {
-    const res = await fetch(`${BaseUrl}/api/posts/PostComment/${postId}`, {
+    const res = await fetch(`${VITE_BACKEND_URL}api/posts/PostComment/${postId}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",

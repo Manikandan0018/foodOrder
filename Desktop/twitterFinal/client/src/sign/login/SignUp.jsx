@@ -4,6 +4,9 @@ import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from 'react-router-dom';
 import logo from '../../img/twitter-logo.png'
 
+const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+console.log("Backend URL:", VITE_BACKEND_URL); // just to confirm
+
 function SignUp() {
   const [formData, setFormData] = useState({
     email: "",
@@ -27,7 +30,7 @@ function SignUp() {
 
   const { mutate : signup, isError, error } = useMutation({
     mutationFn: async ({ email, password, username,fullname }) => {
-      const url = `${BaseUrl}/api/auth/signup`;
+      const url = `${VITE_BACKEND_URL}api/auth/signup`;
 
       const res = await fetch(url, {
         method: "POST",

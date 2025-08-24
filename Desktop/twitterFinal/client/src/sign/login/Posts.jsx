@@ -2,23 +2,27 @@ import { useQuery} from '@tanstack/react-query';
 import BaseUrl from '../../constant/Url';
 import { Post } from './Post';
 import { useFollowRemove } from './Follow.js';
+
+const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+console.log("Backend URL:", VITE_BACKEND_URL); // just to confirm
+
 export const Posts = ({ feedType }) => {
 
   const getPostEndPoint = () => {
     switch (feedType) {
       case 'foryou':
-        return `${BaseUrl}/api/posts/allPosts`;
+        return `${VITE_BACKEND_URL}api/posts/allPosts`;
       case 'following':
-        return `${BaseUrl}/api/posts/getFollowingPosts`;
+        return `${VITE_BACKEND_URL}api/posts/getFollowingPosts`;
       default:
-        return `${BaseUrl}/api/posts/allPosts`;
+        return `${VITE_BACKEND_URL}api/posts/allPosts`;
     }
   };
 
   const { data: authUser, isLoading: authLoading } = useQuery({
     queryKey: ["authUser"],
     queryFn: async () => {
-      const res = await fetch(`${BaseUrl}/api/auth/getMe`, {
+      const res = await fetch(`${VITE_BACKEND_URL}api/auth/getMe`, {
         credentials: "include",
       });
 

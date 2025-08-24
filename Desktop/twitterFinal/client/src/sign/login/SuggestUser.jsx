@@ -6,13 +6,16 @@ import {useFollow} from '../useFollow.js'
 import postProfile from '../../img/profile-none.jpg'
 
 
+const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+console.log("Backend URL:", VITE_BACKEND_URL); // just to confirm
+
 export const SuggestUser = ({setProfileShow,profileShow}) => {
   
 
   const { data: suggestUsers } = useQuery({
     queryKey : ["suggestedUsers"],
     queryFn: async () => {
-      const res = await fetch(`${BaseUrl}/api/users/suggested`, {
+      const res = await fetch(`${VITE_BACKEND_URL}api/users/suggested`, {
         method: "GET",
         credentials: "include",
         headers: {

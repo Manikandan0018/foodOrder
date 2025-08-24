@@ -6,13 +6,16 @@ import { IoSettingsOutline } from "react-icons/io5";
 import { FaUser } from "react-icons/fa";
 import { FaHeart } from "react-icons/fa6";
 
+const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+console.log("Backend URL:", VITE_BACKEND_URL); // just to confirm
+
 const NotificationPage = () => {
 	const queryClient = useQueryClient();
 
 	const { data: notifications, isLoading } = useQuery({
 		queryKey: ["notifications"],
 		queryFn: async () => {
-			const res = await fetch(`${BaseUrl}/api/notifications/GetNotification`, {
+			const res = await fetch(`${VITE_BACKEND_URL}api/notifications/GetNotification`, {
 				method: "GET",
 				credentials: "include",
 				headers: { "Content-Type": "application/json" },
@@ -25,7 +28,7 @@ const NotificationPage = () => {
 
 	const { mutate: deleteNotifications } = useMutation({
 		mutationFn: async () => {
-			const res = await fetch(`${BaseUrl}/api/notifications/DeleteNotification`, {
+			const res = await fetch(`${VITE_BACKEND_URL}api/notifications/DeleteNotification`, {
 				method: "DELETE",
 				credentials: "include",
 				headers: { "Content-Type": "application/json" },

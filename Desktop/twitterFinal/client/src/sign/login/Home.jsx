@@ -9,6 +9,9 @@ import { SuggestUser } from "./SuggestUser.jsx";
 import { CreatePost } from "./CreatePost.jsx";
 import NotificationPage from "./NotificationPage.jsx";
 
+const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+console.log("Backend URL:", VITE_BACKEND_URL); // just to confirm
+
 export const Home = ({ notifi }) => {
   const [feedType, setFeedType] = useState('foryou');
 
@@ -16,7 +19,7 @@ export const Home = ({ notifi }) => {
   const { data: authUser, isLoading } = useQuery({
     queryKey: ['authUser'],
     queryFn: async () => {
-      const res = await fetch(`${BaseUrl}/api/auth/getMe`, { credentials: 'include' });
+      const res = await fetch(`${VITE_BACKEND_URL}/api/auth/getMe`, { credentials: 'include' });
       if (!res.ok) throw new Error('Failed to fetch auth user');
       return res.json();
     },

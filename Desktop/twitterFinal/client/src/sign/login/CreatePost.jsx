@@ -2,6 +2,9 @@ import { useState, useRef } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import BaseUrl from '../../constant/Url';
 
+const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+console.log("Backend URL:", VITE_BACKEND_URL); // just to confirm
+
 export const CreatePost = () => {
   const [text, setText] = useState('');
   const [image, setImage] = useState(null);
@@ -11,7 +14,7 @@ export const CreatePost = () => {
 
   const { mutate: createPost, isPending } = useMutation({
     mutationFn: async (formData) => {
-      const res = await fetch(`${BaseUrl}/api/posts/create`, {
+      const res = await fetch(`${VITE_BACKEND_URL}api/posts/create`, {
         method: 'POST',
         credentials: 'include',
         body: formData,
