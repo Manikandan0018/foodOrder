@@ -23,8 +23,11 @@ export const Posts = ({ feedType }) => {
     queryKey: ["authUser"],
     queryFn: async () => {
       const res = await fetch(`${VITE_BACKEND_URL}api/auth/getMe`, {
-        credentials: "include",
-      });
+  method: "GET",
+  credentials: "include", // ✅ send the cookie automatically
+  headers: { "Content-Type": "application/json" },
+});
+
 
       if (!res.ok) throw new Error("Failed to fetch user");
       return res.json();
