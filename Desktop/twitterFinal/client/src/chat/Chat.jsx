@@ -232,7 +232,7 @@ const Chat = ({ currentUser }) => {
               <input
                 value={text}
                 onChange={(e) => setText(e.target.value)}
-                className="flex-1 lg:w-200 border p-2 rounded-full focus:outline-none"
+                className="flex-1 lg:w-100 border p-2 rounded-full focus:outline-none"
                 placeholder="Type a message..."
               />
               <button onClick={handleSend} className="ml-2 bg-blue-500 text-white px-4 py-2 rounded-full">
