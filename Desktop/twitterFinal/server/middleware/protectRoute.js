@@ -1,18 +1,14 @@
 import jwt from "jsonwebtoken";
 import User from "../models/user.model.js";
 
-
-
 export const protectRoute = async (req, res, next) => {
   try {
-    let token = req.headers.authorization?.startsWith("Bearer")
-      ? req.headers.authorization.split(" ")[1]
-      : null;
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith("Bearer "))
+      return res.status(401).json({ error: "Unauthorized: No token provided" });
 
-    if (!token) return res.status(401).json({ error: "Unauthorized: No token provided" });
-
+    const token = authHeader.split(" ")[1];
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    if (!decoded?.userId) return res.status(401).json({ error: "Unauthorized: Invalid token" });
 
     const user = await User.findById(decoded.userId).select("-password");
     if (!user) return res.status(404).json({ error: "User not found" });
@@ -20,10 +16,8 @@ export const protectRoute = async (req, res, next) => {
 
     req.user = user;
     next();
-  } catch (error) {
-    console.error("JWT Error:", error.message);
-    res.status(401).json({ error: error.message || "Invalid token" });
+  } catch (err) {
+    console.error("JWT Error:", err.message);
+    res.status(401).json({ error: "Invalid token" });
   }
 };
-
-
