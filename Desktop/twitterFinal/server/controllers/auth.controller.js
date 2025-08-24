@@ -1,8 +1,14 @@
 import User from '../models/user.model.js';
 import bcrypt from 'bcryptjs';
-import generateToken from '../utils/generateToken.js';
+import jwt from 'jsonwebtoken';
 import Post from '../models/post.model.js';
 
+// Generate JWT
+const generateToken = (userId) => {
+  return jwt.sign({ userId }, process.env.JWT_SECRET, { expiresIn: "1d" });
+};
+
+// Signup
 export const signup = async (req, res) => {
   try {
     const { username, fullname, email, password } = req.body;
@@ -14,34 +20,29 @@ export const signup = async (req, res) => {
 
     const existingEmail = await User.findOne({ email });
     const existingUsername = await User.findOne({ username });
-
     if (existingEmail || existingUsername) {
       return res.status(400).json({ error: "Email or username already registered." });
     }
 
     if (password.length < 6) {
-      return res.status(400).json({ error: "Password must be at least 6 characters long" });
+      return res.status(400).json({ error: "Password must be at least 6 characters" });
     }
 
     const hashPassword = await bcrypt.hash(password, 10);
-
     const newUser = new User({ username, fullname, email: email.trim(), password: hashPassword });
     await newUser.save();
 
-    generateToken(newUser._id, res);
+    const token = generateToken(newUser._id);
 
     res.status(201).json({
       message: "Signup successful",
-      _id: newUser._id,
-      username: newUser.username,
-      fullname: newUser.fullname,
-      email: newUser.email,
-      followers: newUser.followers,
-      following: newUser.following,
-      profileImg: newUser.profileImg,
-      coverImg: newUser.coverImg,
-      bio: newUser.bio,
-      link: newUser.link
+      token,
+      user: {
+        _id: newUser._id,
+        username: newUser.username,
+        fullname: newUser.fullname,
+        email: newUser.email,
+      },
     });
 
   } catch (error) {
@@ -50,6 +51,7 @@ export const signup = async (req, res) => {
   }
 };
 
+// Login
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -62,14 +64,17 @@ export const login = async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(401).json({ message: "Invalid credentials" });
 
-    generateToken(user._id, res);
+    const token = generateToken(user._id);
 
     res.status(200).json({
       message: "Login successful",
-      _id: user._id,
-      username: user.username,
-      fullname: user.fullname,
-      email: user.email
+      token,
+      user: {
+        _id: user._id,
+        username: user.username,
+        fullname: user.fullname,
+        email: user.email,
+      },
     });
   } catch (error) {
     console.error(error);
@@ -77,17 +82,7 @@ export const login = async (req, res) => {
   }
 };
 
-export const logout = async (req, res) => {
-  try {
-    res.cookie("jwt", "", { maxAge: 0 });
-    res.status(200).json({ message: "Logout successful" });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Logout error" });
-  }
-};
-
-// 🔹 Logged-in user (getMe)
+// Get logged-in user
 export const getMe = async (req, res) => {
   try {
     const user = await User.findById(req.user._id)
