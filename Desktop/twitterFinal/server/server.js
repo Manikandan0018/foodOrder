@@ -32,10 +32,26 @@ app.use(express.json(
 ));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use(cors({
-    origin: 'http://localhost:5173',
-    credentials: true
-}));
+
+// ✅ Correct CORS setup
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // allow requests with no origin (like mobile apps or curl)
+      if (!origin) return callback(null, true);
+
+      if (
+        origin === "http://localhost:5173" ||
+        /\.vercel\.app$/.test(origin)   // ✅ regex check
+      ) {
+        return callback(null, true);
+      }
+      callback(new Error("Not allowed by CORS"));
+    },
+    credentials: true,
+  })
+);
+
 
 app.get("/", (req, res) => {
   res.send("✅ Server is running!");
