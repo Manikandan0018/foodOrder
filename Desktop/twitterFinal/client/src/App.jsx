@@ -14,6 +14,9 @@ import Admin from './Admin/Admin.jsx';
 import { PeopleProfile } from './sign/login/PeopleProfile.jsx';
 import Chat from './chat/Chat.jsx';
 
+const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+console.log("Backend URL:", VITE_BACKEND_URL); // just to confirm
+
 const App = () => {
   const [noti, setNoti] = useState(false);
   const [showSidebar, setShowSidebar] = useState(false);
@@ -22,7 +25,7 @@ const App = () => {
   const { data: authUser, isLoading } = useQuery({
     queryKey: ['authUser'],
     queryFn: async () => {
-      const res = await fetch(`${BaseUrl}/api/auth/getMe`, {
+      const res = await fetch(`${VITE_BACKEND_URL}/api/auth/getMe`, {
         method: "GET",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
