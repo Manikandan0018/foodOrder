@@ -37,6 +37,11 @@ app.use(cors({
     credentials: true
 }));
 
+app.get("/", (req, res) => {
+  res.send("✅ Server is running!");
+});
+
+
 // Cloudinary Config
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_NAME,
