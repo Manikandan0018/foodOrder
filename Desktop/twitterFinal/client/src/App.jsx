@@ -25,7 +25,7 @@ const App = () => {
   const { data: authUser, isLoading } = useQuery({
     queryKey: ['authUser'],
     queryFn: async () => {
-      const res = await fetch(`${VITE_BACKEND_URL}/api/auth/getMe`, {
+      const res = await fetch(`${VITE_BACKEND_URL}api/auth/getMe`, {
         method: "GET",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
