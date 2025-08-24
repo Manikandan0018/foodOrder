@@ -14,7 +14,7 @@ export const Login = () => {
 
   const { mutate: login } = useMutation({
     mutationFn: async ({ email, password }) => {
-      const res = await fetch(`${VITE_BACKEND_URL}/api/auth/login`, {
+      const res = await fetch(`${VITE_BACKEND_URL}api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),

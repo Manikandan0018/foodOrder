@@ -24,7 +24,7 @@ const App = () => {
     queryFn: async () => {
       if (!token) return null;
 
-      const res = await fetch(`${VITE_BACKEND_URL}/api/auth/getMe`, {
+      const res = await fetch(`${VITE_BACKEND_URL}api/auth/getMe`, {
         method: "GET",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
       });
