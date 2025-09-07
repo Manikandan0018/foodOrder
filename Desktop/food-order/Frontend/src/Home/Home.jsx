@@ -106,7 +106,7 @@ const processedProducts = [...products]
     <div className="font-sans text-gray-800">
       {/* Navbar */}
       <Header />
-      <div className="sticky top-16 z-50 flex justify-center  px-4 py-3 ">
+      <div className="sticky top-16 z-40 flex justify-center  px-4 py-3 ">
         <div className="flex w-full max-w-md">
           <input
             type="text"
