@@ -1,42 +1,41 @@
-import dotenv from "dotenv";
-dotenv.config();
 import Twilio from "twilio";
-import Order from "../models/orders.js"; // adjust path if needed
+import Order from "../models/orders.js";
 
-
-const client = Twilio(
+// Initialize Twilio client using environment variables
+// Assumes TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_PHONE_NUMBER
+// are set in Render Environment Variables (preferred over .env)
+const client = new Twilio(
   process.env.TWILIO_ACCOUNT_SID,
   process.env.TWILIO_AUTH_TOKEN
 );
-
-console.log("Twilio number from env:", process.env.TWILIO_PHONE_NUMBER);
 
 export const placeOrder = async (req, res) => {
   try {
     const { orderId } = req.body;
 
-    // fetch order with user and address
+    if (!orderId)
+      return res.status(400).json({ message: "orderId is required" });
+
+    // Fetch order with user and address populated
     const order = await Order.findById(orderId)
       .populate("user")
-      .populate("address"); 
-
+      .populate("address");
     if (!order) return res.status(404).json({ message: "Order not found" });
 
-    // Get phone number from address first, fallback to user
+    // Get recipient phone number
     const phoneNumber = order.address?.phone || order.user?.phone;
-    if (!phoneNumber) {
+    if (!phoneNumber)
       return res.status(400).json({ message: "User phone number not found" });
-    }
 
-    // Get Twilio number from env
-    const rawFromNumber = process.env.TWILIO_PHONE_NUMBER?.trim();
-    if (!rawFromNumber) {
-      return res.status(500).json({ message: "TWILIO_PHONE_NUMBER is not set in .env" });
-    }
+    // Use Twilio phone number as-is (already in E.164)
+    const fromNumber = process.env.TWILIO_PHONE_NUMBER?.trim();
+    if (!fromNumber)
+      return res.status(500).json({ message: "TWILIO_PHONE_NUMBER not set" });
 
-    // Ensure both numbers are in E.164 format
-    const fromNumber = rawFromNumber.startsWith("+") ? rawFromNumber : `+91${rawFromNumber}`;
-    const toNumber = phoneNumber.startsWith("+") ? phoneNumber : `+91${phoneNumber}`;
+    // Ensure recipient number is in E.164 format (prepend +91 if needed)
+    const toNumber = phoneNumber.startsWith("+")
+      ? phoneNumber
+      : `+91${phoneNumber}`;
 
     // Send SMS
     await client.messages.create({
@@ -45,9 +44,11 @@ export const placeOrder = async (req, res) => {
       body: `Hi ${order.user.name}, your order #${orderId} has been placed!`,
     });
 
-    res.json({ message: "SMS sent successfully" });
+    return res.json({ message: "SMS sent successfully" });
   } catch (err) {
     console.error("SMS Error:", err);
-    res.status(500).json({ message: "Failed to send SMS", error: err.message });
+    return res
+      .status(500)
+      .json({ message: "Failed to send SMS", error: err.message });
   }
 };
