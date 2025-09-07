@@ -7,11 +7,10 @@ import Dashboard from "../Dashboard/Dashboard";
 import { AdminHeader } from "./AdminHeader";
 
 const api = axios.create({
-  baseURL: "http://localhost:5000",
+  baseURL: import.meta.env.VITE_BACKEND_URL,
 });
 
-const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-console.log("Backend URL:", VITE_BACKEND_URL); // just to confirm
+
 
 const AdminDashboard = () => {
   const queryClient = useQueryClient();
@@ -29,13 +28,13 @@ const AdminDashboard = () => {
   const { data: products = [] } = useQuery({
     queryKey: ["products"],
     queryFn: async () => {
-      const res = await VITE_BACKEND_URL.get(`/api/AllProduct/getProduct`);
+      const res = await api.get(`/api/AllProduct/getProduct`);
       return res.data;
     },
   });
 
   const addMutation = useMutation({
-    mutationFn: (data) => VITE_BACKEND_URL.post(`/api/AllProduct/addProduct`, data),
+    mutationFn: (data) => api.post(`/api/AllProduct/addProduct`, data),
     onSuccess: () => {
       queryClient.invalidateQueries(["products"]);
       toast.success("Product added!");
@@ -46,7 +45,7 @@ const AdminDashboard = () => {
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }) =>
-      VITE_BACKEND_URL.put(`/api/AllProduct/updateProduct/${id}`, data),
+      api.put(`/api/AllProduct/updateProduct/${id}`, data),
     onSuccess: () => {
       queryClient.invalidateQueries(["products"]);
       toast.success("Product updated!");
@@ -57,7 +56,7 @@ const AdminDashboard = () => {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id) => VITE_BACKEND_URL.delete(`/api/AllProduct/deleteProduct/${id}`),
+    mutationFn: (id) => api.delete(`/api/AllProduct/deleteProduct/${id}`),
     onSuccess: () => {
       queryClient.invalidateQueries(["products"]);
       toast.success("Product deleted!");
