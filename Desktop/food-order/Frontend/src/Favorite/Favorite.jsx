@@ -5,7 +5,7 @@ import { Heart, Trash2, ShoppingCart } from "lucide-react";
 import { motion } from "framer-motion";
 import { Header } from "../Header/Header";
 
-const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+const VITE_BACKEND_URL =import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
 console.log("Backend URL:", VITE_BACKEND_URL);
 
 const Favorite = () => {

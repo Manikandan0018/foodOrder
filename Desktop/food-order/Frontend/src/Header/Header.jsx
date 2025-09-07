@@ -5,11 +5,9 @@ import axios from "axios";
 import { FiShoppingCart, FiMenu, FiX } from "react-icons/fi";
 import { useNavigate, useLocation } from "react-router-dom";
 
-const api = axios.create({
-  baseURL: "http://localhost:5000",
-});
 
-const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
+const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
 console.log("Backend URL:", VITE_BACKEND_URL);
 
 export const Header = () => {

@@ -16,7 +16,8 @@ import Address from "../Adress/Address";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
-const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
+
 console.log("Backend URL:", VITE_BACKEND_URL);
 
 const ShopDetails = () => {

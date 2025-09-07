@@ -7,10 +7,8 @@ import Dashboard from "../Dashboard/Dashboard";
 import { AdminHeader } from "./AdminHeader";
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_BACKEND_URL,
+  baseURL: import.meta.env.VITE_BACKEND_URL || "http://localhost:5000",
 });
-
-
 
 const AdminDashboard = () => {
   const queryClient = useQueryClient();
@@ -108,9 +106,9 @@ const AdminDashboard = () => {
   return (
     <>
       <AdminHeader />
-      <div className="flex min-h-screen bg-gray-100">
+      <div className="flex flex-col md:flex-row min-h-screen bg-gray-100">
         {/* Sidebar */}
-        <aside className="w-64 bg-white shadow-md p-4">
+        <aside className="w-full md:w-64 bg-white shadow-md p-4">
           <h2 className="text-lg font-bold mb-4 text-orange-600">Categories</h2>
           <ul className="space-y-2">
             {[
@@ -139,9 +137,9 @@ const AdminDashboard = () => {
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 flex gap-6 p-6">
+        <main className="flex-1 flex flex-col md:flex-row gap-6 p-6">
           {/* Form */}
-          <div className="w-80 bg-white p-4 shadow-lg rounded-xl sticky top-6 h-max self-start">
+          <div className="w-full md:w-80 bg-white p-4 shadow-lg rounded-xl md:sticky md:top-6 h-max self-start">
             <h2 className="text-lg font-semibold mb-3">
               {editing ? "Edit Product" : "Add Product"}
             </h2>
@@ -209,13 +207,13 @@ const AdminDashboard = () => {
           </div>
 
           {/* Products List */}
-          <div className="flex-1 overflow-y-auto max-h-screen">
+          <div className="flex-1 overflow-y-auto">
             {filter === "dashboard" ? (
               <Dashboard />
             ) : (
               <>
                 <h2 className="text-lg font-semibold mb-3">Products</h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {filteredProducts.map((p) => (
                     <div
                       key={p._id}

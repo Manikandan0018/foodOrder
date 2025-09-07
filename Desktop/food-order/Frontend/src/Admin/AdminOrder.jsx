@@ -3,7 +3,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { AdminHeader } from "./AdminHeader";
 
-const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
 console.log("Backend URL:", VITE_BACKEND_URL); 
 
 
@@ -17,7 +17,7 @@ const AdminOrder = () => {
   const fetchOrders = async () => {
     try {
       const { data } = await axios.get(
-        `${VITE_BACKEND_URL}AdminOrder/getAdminOrder`,
+        `${VITE_BACKEND_URL}api/AdminOrder/getAdminOrder`,
         { withCredentials: true }
       );
       const sortedOrders = data.sort(

@@ -8,7 +8,7 @@ import foodImage2 from "../image/peeza.jpg";
 import bgImg from "../image/burger.jpg";
 import { Header } from "../Header/Header";
 
-const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+const VITE_BACKEND_URL =import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
 console.log("Backend URL:", VITE_BACKEND_URL);
 
 const Login = () => {
