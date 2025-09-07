@@ -15,11 +15,14 @@ import {
   YAxis,
 } from "recharts";
 
+const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+console.log("Backend URL:", VITE_BACKEND_URL);
+
 export default function Dashboard() {
   const [stats, setStats] = useState(null);
 
   useEffect(() => {
-    axios.get("http://localhost:5000/api/dashboard/stats").then((res) => {
+    axios.get(`${VITE_BACKEND_URL}api/dashboard/stats`).then((res) => {
       setStats(res.data);
     });
   }, []);

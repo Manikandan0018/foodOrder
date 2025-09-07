@@ -3,6 +3,9 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useMutation } from "@tanstack/react-query";
 
+const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+console.log("Backend URL:", VITE_BACKEND_URL);
+
 const Address = ({ onAddressSaved }) => {
   const token = localStorage.getItem("token");
   const [currentAddress, setCurrentAddress] = useState(null);
@@ -24,7 +27,7 @@ const Address = ({ onAddressSaved }) => {
   const saveManualMutation = useMutation({
     mutationFn: async (data) => {
       return await axios.post(
-        "http://localhost:5000/api/address/save-manual",
+        `${VITE_BACKEND_URL}api/address/save-manual`,
         data,
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -53,7 +56,7 @@ const Address = ({ onAddressSaved }) => {
   const detectAddressMutation = useMutation({
     mutationFn: async ({ latitude, longitude }) => {
       const res = await axios.post(
-        "http://localhost:5000/api/address/save-auto",
+        `${VITE_BACKEND_URL}api/address/save-auto`,
         { latitude, longitude },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -78,7 +81,7 @@ const Address = ({ onAddressSaved }) => {
     const fetchCurrentAddress = async () => {
       if (!token) return;
       try {
-        const res = await axios.get("http://localhost:5000/api/address/my", {
+        const res = await axios.get(`${VITE_BACKEND_URL}api/address/my`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (res.data && res.data.length > 0) {

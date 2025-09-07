@@ -5,10 +5,11 @@ import { Heart, Trash2, ShoppingCart } from "lucide-react";
 import { motion } from "framer-motion";
 import { Header } from "../Header/Header";
 
+const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+console.log("Backend URL:", VITE_BACKEND_URL);
+
 const Favorite = () => {
   const queryClient = useQueryClient();
-
-
   
   // Add to cart
 
@@ -21,7 +22,7 @@ const addToCart = async (productId, quantity = 1) => {
     }
 
     const { data } = await axios.post(
-      "http://localhost:5000/api/cart/addCart",
+      `${VITE_BACKEND_URL}api/cart/addCart`,
       { product: productId, quantity },
       {
         headers: { Authorization: `Bearer ${token}` },
@@ -44,7 +45,7 @@ const addToCart = async (productId, quantity = 1) => {
     queryKey: ["favorites"],
     queryFn: async () => {
       const token = localStorage.getItem("token");
-      const res = await axios.get("http://localhost:5000/api/favorite/get", {
+      const res = await axios.get(`${VITE_BACKEND_URL}api/favorite/get`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       return res.data;
@@ -56,7 +57,7 @@ const addToCart = async (productId, quantity = 1) => {
     mutationFn: async (productId) => {
       const token = localStorage.getItem("token");
       await axios.delete(
-        `http://localhost:5000/api/favorite/remove/${productId}`,
+        `${VITE_BACKEND_URL}api/favorite/remove/${productId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
     },

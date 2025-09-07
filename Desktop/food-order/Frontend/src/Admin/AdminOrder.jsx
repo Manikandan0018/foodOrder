@@ -3,6 +3,9 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { AdminHeader } from "./AdminHeader";
 
+const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+console.log("Backend URL:", VITE_BACKEND_URL); 
+
 const AdminOrder = () => {
   const [orders, setOrders] = useState([]);
 
@@ -10,7 +13,7 @@ const AdminOrder = () => {
   const fetchOrders = async () => {
     try {
       const { data } = await axios.get(
-        "http://localhost:5000/api/AdminOrder/getAdminOrder",
+        `${VITE_BACKEND_URL}AdminOrder/getAdminOrder`,
         { withCredentials: true }
       );
       const sortedOrders = data.sort(
@@ -30,7 +33,7 @@ const AdminOrder = () => {
   const handleStatusChange = async (orderId, status) => {
     try {
       await axios.put(
-        `http://localhost:5000/api/AdminOrder/update/${orderId}`,
+        `${VITE_BACKEND_URL}api/AdminOrder/update/${orderId}`,
         { status },
         { withCredentials: true }
       );
@@ -45,7 +48,7 @@ const AdminOrder = () => {
   const handleDelete = async (orderId) => {
     try {
       await axios.delete(
-        `http://localhost:5000/api/AdminOrder/delete/${orderId}`,
+        `${VITE_BACKEND_URL}api/AdminOrder/delete/${orderId}`,
         { withCredentials: true }
       );
       toast.success("Order deleted");

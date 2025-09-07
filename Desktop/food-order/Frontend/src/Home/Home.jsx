@@ -11,6 +11,9 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { FaChevronDown } from "react-icons/fa";
 
+const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+console.log("Backend URL:", VITE_BACKEND_URL);
+
 const Home = () => {
   const [products, setProducts] = useState([]);
   const [visibleCount, setVisibleCount] = useState(12);
@@ -31,7 +34,7 @@ const Home = () => {
   // Fetch products
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/AllProduct/getProduct")
+      .get(`${VITE_BACKEND_URL}api/AllProduct/getProduct`)
       .then((res) => setProducts(res.data))
       .catch((err) => console.error("Error fetching products:", err));
   }, []);
@@ -46,7 +49,7 @@ const Home = () => {
       }
 
       const { data } = await axios.post(
-        "http://localhost:5000/api/cart/addCart",
+        `${VITE_BACKEND_URL}api/cart/addCart`,
         { product: productId, quantity },
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -65,7 +68,7 @@ const Home = () => {
   const addToFavorite = useMutation({
     mutationFn: async (productId) => {
       const { data } = await axios.post(
-        "http://localhost:5000/api/favorite/add",
+        `${VITE_BACKEND_URL}api/favorite/add`,
         { product: productId },
         { headers: { Authorization: `Bearer ${token}` } }
       );

@@ -8,6 +8,9 @@ import foodImage2 from "../image/peeza.jpg";
 import bgImg from "../image/burger.jpg";
 import { Header } from "../Header/Header";
 
+const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+console.log("Backend URL:", VITE_BACKEND_URL);
+
 const Login = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({
@@ -29,7 +32,7 @@ const Login = () => {
   //login
 const handleLogin = async () => {
   try {
-    const res = await axios.post("http://localhost:5000/api/users/login", {
+    const res = await axios.post(`${VITE_BACKEND_URL}api/users/login`, {
       email: formData.email,
       password: formData.password,
     });
@@ -38,7 +41,7 @@ const handleLogin = async () => {
     localStorage.setItem("token", token);
 
     // ✅ Fetch user details
-    const userRes = await axios.get("http://localhost:5000/api/users/profile", {
+    const userRes = await axios.get(`${VITE_BACKEND_URL}api/users/profile`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     const user = userRes.data;
@@ -59,7 +62,7 @@ const handleLogin = async () => {
   // ✅ Register
   const handleRegister = async () => {
     try {
-      const res = await axios.post("http://localhost:5000/api/users/register", {
+      const res = await axios.post(`${VITE_BACKEND_URL}api/users/register`, {
         name: formData.name,
         email: formData.email,
         password: formData.password,

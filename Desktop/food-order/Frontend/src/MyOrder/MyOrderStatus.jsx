@@ -10,6 +10,9 @@ import {
   Package,
 } from "lucide-react";
 
+const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+console.log("Backend URL:", VITE_BACKEND_URL);
+
 const statusSteps = ["pending", "confirmed", "shipped", "delivered"];
 
 const statusConfig = {
@@ -27,7 +30,7 @@ const MyOrderStatus = () => {
 
   const fetchOrders = async () => {
     try {
-      const { data } = await axios.get("http://localhost:5000/api/orders/my", {
+      const { data } = await axios.get(`${VITE_BACKEND_URL}api/orders/my`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setOrders(data);
@@ -39,7 +42,7 @@ const MyOrderStatus = () => {
   const cancelOrder = async (id) => {
     if (!window.confirm("Are you sure you want to cancel this order?")) return;
     try {
-      await axios.delete(`http://localhost:5000/api/orders/cancel/${id}`, {
+      await axios.delete(`${VITE_BACKEND_URL}api/orders/cancel/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       toast.success("Order cancelled successfully");

@@ -16,6 +16,9 @@ import Address from "../Adress/Address";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
+const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+console.log("Backend URL:", VITE_BACKEND_URL);
+
 const ShopDetails = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -29,7 +32,7 @@ const ShopDetails = () => {
     queryKey: ["currentAddress"],
     queryFn: async () => {
       if (!token) return null;
-      const res = await axios.get("http://localhost:5000/api/address/my", {
+      const res = await axios.get(`${VITE_BACKEND_URL}api/address/my`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       return res.data.length > 0 ? res.data[res.data.length - 1] : null;
@@ -41,7 +44,7 @@ const ShopDetails = () => {
     queryKey: ["cart"],
     queryFn: async () => {
       if (!token) return [];
-      const res = await axios.get("http://localhost:5000/api/cart/getCart", {
+      const res = await axios.get(`${VITE_BACKEND_URL}api/cart/getCart`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       return res.data;
@@ -65,7 +68,7 @@ const ShopDetails = () => {
       if (!currentAddress)
         throw new Error("Please add address first before ordering.");
       const { data } = await axios.post(
-        "http://localhost:5000/api/cart/addCart",
+        `${VITE_BACKEND_URL}api/cart/addCart`,
         { product: productId, quantity: quantity[productId] },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -79,7 +82,7 @@ const ShopDetails = () => {
   const addToFavorite = useMutation({
     mutationFn: async (productId) => {
       const { data } = await axios.post(
-        "http://localhost:5000/api/favorite/add",
+        `${VITE_BACKEND_URL}api/favorite/add`,
         { product: productId },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -99,7 +102,7 @@ const ShopDetails = () => {
     mutationFn: async (cartItemId) => {
       if (!token) throw new Error("Login required");
       await axios.delete(
-        `http://localhost:5000/api/cart/removeCart/${cartItemId}`,
+        `${VITE_BACKEND_URL}api/cart/removeCart/${cartItemId}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -116,7 +119,7 @@ const ShopDetails = () => {
       if (!currentAddress) throw new Error("Please add address first.");
       // Place order
       const orderRes = await axios.post(
-        "http://localhost:5000/api/orders/single",
+        `${VITE_BACKEND_URL}api/orders/single`,
         {
           productId,
           quantity: quantity[productId],
@@ -126,7 +129,7 @@ const ShopDetails = () => {
       );
       // Remove cart item
       await axios.delete(
-        `http://localhost:5000/api/cart/removeCart/${cartItemId}`,
+        `${VITE_BACKEND_URL}api/cart/removeCart/${cartItemId}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }

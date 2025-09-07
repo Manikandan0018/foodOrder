@@ -4,6 +4,9 @@ import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { Header } from "../Header/Header";
 import { FaRupeeSign, FaShoppingBag } from "react-icons/fa";
 
+const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+console.log("Backend URL:", VITE_BACKEND_URL);
+
 const Checkout = () => {
   const token = localStorage.getItem("token");
   const queryClient = useQueryClient();
@@ -12,7 +15,7 @@ const Checkout = () => {
   const { data: orders = [], isLoading } = useQuery({
     queryKey: ["myOrders"],
     queryFn: async () => {
-      const res = await axios.get("http://localhost:5000/api/orders/my", {
+      const res = await axios.get(`${VITE_BACKEND_URL}/api/orders/my`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       return res.data;
@@ -22,7 +25,7 @@ const Checkout = () => {
 
   const cancelOrderMutation = useMutation({
     mutationFn: async (orderId) => {
-      return axios.delete(`http://localhost:5000/api/orders/cancel/${orderId}`, {
+      return axios.delete(`${VITE_BACKEND_URL}api/orders/cancel/${orderId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
     },

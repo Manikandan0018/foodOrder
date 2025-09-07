@@ -9,6 +9,9 @@ const api = axios.create({
   baseURL: "http://localhost:5000",
 });
 
+const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+console.log("Backend URL:", VITE_BACKEND_URL);
+
 export const Header = () => {
   const token = localStorage.getItem("token");
   const [menuOpen, setMenuOpen] = useState(false);
@@ -24,7 +27,7 @@ export const Header = () => {
     queryKey: ["profile"],
     queryFn: async () => {
       if (!token) return null;
-      const res = await axios.get("http://localhost:5000/api/users/profile", {
+      const res = await axios.get(`${VITE_BACKEND_URL}api/users/profile`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       return res.data;
@@ -37,7 +40,7 @@ export const Header = () => {
     queryKey: ["cart"],
     queryFn: async () => {
       if (!token) return [];
-      const res = await axios.get("http://localhost:5000/api/cart/getCart", {
+      const res = await axios.get(`${VITE_BACKEND_URL}api/cart/getCart`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       return res.data;
