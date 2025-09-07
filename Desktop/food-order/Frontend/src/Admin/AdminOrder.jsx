@@ -6,6 +6,10 @@ import { AdminHeader } from "./AdminHeader";
 const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 console.log("Backend URL:", VITE_BACKEND_URL); 
 
+
+const ss = import.meta.env.TWILIO_ACCOUNT_SID;
+console.log("URL:", ss); 
+
 const AdminOrder = () => {
   const [orders, setOrders] = useState([]);
 
