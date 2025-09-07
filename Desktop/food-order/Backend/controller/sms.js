@@ -1,10 +1,8 @@
-import Twilio from "twilio";
+import twilio from "twilio";
 import Order from "../models/orders.js";
 
-// Initialize Twilio client using environment variables
-// Assumes TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_PHONE_NUMBER
-// are set in Render Environment Variables (preferred over .env)
-const client = new Twilio(
+// Initialize Twilio client
+const client = twilio(
   process.env.TWILIO_ACCOUNT_SID,
   process.env.TWILIO_AUTH_TOKEN
 );
@@ -13,38 +11,47 @@ export const placeOrder = async (req, res) => {
   try {
     const { orderId } = req.body;
 
-    if (!orderId)
+    if (!orderId) {
       return res.status(400).json({ message: "orderId is required" });
+    }
 
     // Fetch order with user and address populated
     const order = await Order.findById(orderId)
       .populate("user")
       .populate("address");
-    if (!order) return res.status(404).json({ message: "Order not found" });
+
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
 
     // Get recipient phone number
     const phoneNumber = order.address?.phone || order.user?.phone;
-    if (!phoneNumber)
+    if (!phoneNumber) {
       return res.status(400).json({ message: "User phone number not found" });
+    }
 
-    // Use Twilio phone number as-is (already in E.164)
+    // Twilio "from" number
     const fromNumber = process.env.TWILIO_PHONE_NUMBER?.trim();
-    if (!fromNumber)
+    if (!fromNumber) {
       return res.status(500).json({ message: "TWILIO_PHONE_NUMBER not set" });
+    }
 
-    // Ensure recipient number is in E.164 format (prepend +91 if needed)
+    // Ensure recipient number is in E.164 format
     const toNumber = phoneNumber.startsWith("+")
       ? phoneNumber
       : `+91${phoneNumber}`;
 
     // Send SMS
-    await client.messages.create({
+    const message = await client.messages.create({
       from: fromNumber,
       to: toNumber,
       body: `Hi ${order.user.name}, your order #${orderId} has been placed!`,
     });
 
-    return res.json({ message: "SMS sent successfully" });
+    return res.json({
+      message: "SMS sent successfully",
+      sid: message.sid,
+    });
   } catch (err) {
     console.error("SMS Error:", err);
     return res
