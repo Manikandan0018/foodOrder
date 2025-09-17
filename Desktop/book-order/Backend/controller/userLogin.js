@@ -9,23 +9,34 @@ const generateToken = (id) => {
 };
 
 // Register
-export const registerUser = async (req, res) => {
-  const { name, email, password } = req.body;
-  try {
-    const userExists = await User.findOne({ email });
-    if (userExists) return res.status(400).json({ message: "User already exists" });
+ export const registerUser = async (req, res) => {
+   const { name, email, password, role } = req.body; // ✅ include role
 
-    const user = await User.create({ name, email, password });
-    res.status(201).json({
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      token: generateToken(user._id),
-    });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-};
+   try {
+     const userExists = await User.findOne({ email });
+     if (userExists) {
+       return res.status(400).json({ message: "User already exists" });
+     }
+
+     const user = await User.create({
+       name,
+       email,
+       password,
+       role: role || "user", // ✅ default user if role not passed
+     });
+
+     res.status(201).json({
+       _id: user._id,
+       name: user.name,
+       email: user.email,
+       role: user.role, // ✅ return role to frontend
+       token: generateToken(user._id),
+     });
+   } catch (error) {
+     res.status(500).json({ message: "Server error" });
+   }
+ };
+
 
 // Login
 export const loginUser = async (req, res) => {
