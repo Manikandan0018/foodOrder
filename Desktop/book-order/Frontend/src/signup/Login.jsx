@@ -64,15 +64,17 @@ const handleLogin = async () => {
         name: formData.name,
         email: formData.email,
         password: formData.password,
+        role: "user", // 🔑 only if you want to register admin manually
       });
       localStorage.setItem("token", res.data.token);
       setMessage("✅ Registration successful");
       setIsLogin(true);
-      navigate("/"); // redirect after signup
+      navigate("/");
     } catch (err) {
       setMessage(err.response?.data?.message || "❌ Registration failed");
     }
   };
+
 
   return (
     <div
