@@ -228,9 +228,9 @@ const processedProducts = [...products]
 
         {/* Product Grid */}
         {/* Product Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {processedProducts.slice(0, visibleCount).length > 0 ? (
-            processedProducts.slice(0, visibleCount).map((item) => (
+        {processedProducts.slice(0, visibleCount).length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {processedProducts.slice(0, visibleCount).map((item) => (
               <div
                 key={item._id}
                 className="relative bg-white shadow-md rounded-2xl overflow-hidden transform transition duration-200 hover:-translate-y-1 hover:shadow-lg"
@@ -285,13 +285,17 @@ const processedProducts = [...products]
                   </button>
                 </div>
               </div>
-            ))
-          ) : (
-            <p className="col-span-full text-center text-gray-500 text-lg mt-10">
-              No food found 🍔
+            ))}
+          </div>
+        ) : (
+          // Full-screen loader outside grid
+          <div className="flex flex-col items-center justify-center min-h-screen bg-white dark:bg-gray-900">
+            <div className="w-24 h-24 border-8 border-orange-500 border-dashed rounded-full animate-spin"></div>
+            <p className="mt-6 text-lg font-semibold text-gray-700 dark:text-gray-300">
+              Loading, please wait...
             </p>
-          )}
-        </div>
+          </div>
+        )}
 
         {/* Load More button */}
         {visibleCount < processedProducts.length && (
