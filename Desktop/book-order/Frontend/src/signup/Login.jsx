@@ -40,16 +40,13 @@ const handleLogin = async () => {
     const token = res.data.token;
     localStorage.setItem("token", token);
 
-    // ✅ Fetch user details
-    const userRes = await axios.get(`${VITE_BACKEND_URL}api/users/profile`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    const user = userRes.data;
+    // ✅ Fetch user details or use res.data directly
+    const user = res.data;
 
     setMessage("✅ Login successful");
 
     if (user.role === "admin") {
-      navigate("/admin/orders");
+      navigate("/admin/orders"); // ✅ admin redirect
     } else {
       navigate("/");
     }
@@ -57,6 +54,7 @@ const handleLogin = async () => {
     setMessage(err.response?.data?.message || "❌ Login failed");
   }
 };
+
 
 
   // ✅ Register
