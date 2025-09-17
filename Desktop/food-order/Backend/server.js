@@ -15,6 +15,7 @@ import order from "./routes/order.js";
 import AdminOrder from "./routes/adminOrder.js";
 import sms from "./routes/sms.js";
 import restaurantRoutes from "./routes/NearHotel.js";
+import reviewRoutes from "./routes/review.js";
 
 
 dotenv.config();
@@ -53,6 +54,7 @@ app.use("/api/orders", order);
 app.use("/api/AdminOrder", AdminOrder);
 app.use("/api/sms", sms);
 app.use("/api/restaurants", restaurantRoutes);
+app.use("/api/reviews", reviewRoutes);
 
 
 // ✅ Root route
