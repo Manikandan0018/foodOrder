@@ -15,12 +15,13 @@ import { Header } from "../Header/Header";
 import Address from "../Adress/Address";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import Review from "../review/Review";
 
 const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
 
 console.log("Backend URL:", VITE_BACKEND_URL);
 
-const ShopDetails = () => {
+const Cart = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const token = localStorage.getItem("token");
@@ -207,7 +208,7 @@ const ShopDetails = () => {
                 <div>
                   <h2 className="text-2xl font-bold mb-2">{product.name}</h2>
                   <div className="flex items-center mb-3">
-                    <div className="flex text-yellow-400">
+                    {/* <div className="flex text-yellow-400">
                       {[1, 2, 3, 4, 5].map((i) => (
                         <FaStar key={i} />
                       ))}
@@ -217,7 +218,10 @@ const ShopDetails = () => {
                     </span>
                     <span className="ml-6 text-sm text-orange-600 cursor-pointer hover:underline">
                       Write a Review
-                    </span>
+                    </span> */}
+
+                    <Review productId={product._id} />
+                    
                   </div>
                   <p className="text-lg font-semibold text-orange-600">
                     ₹{product.price}
@@ -301,4 +305,4 @@ const ShopDetails = () => {
   );
 };
 
-export default ShopDetails;
+export default Cart;
