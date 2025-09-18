@@ -37,7 +37,6 @@ const generateToken = (id) => {
    }
  };
 
-
 // Login
 export const loginUser = async (req, res) => {
   const { email, password } = req.body;
@@ -48,10 +47,9 @@ export const loginUser = async (req, res) => {
         _id: user._id,
         name: user.name,
         email: user.email,
+        role: user.role,   // ✅ Add this
         token: generateToken(user._id),
       });
-     
-
     } else {
       res.status(401).json({ message: "Invalid email or password" });
     }
@@ -59,7 +57,6 @@ export const loginUser = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
-
 
 
 // Get profile
